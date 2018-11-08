@@ -16,6 +16,7 @@ import (
 
 	"golang.org/x/image/bmp"
 	"golang.org/x/image/tiff"
+	_ "golang.org/x/image/webp"
 )
 
 // Format is an image file format.
@@ -28,6 +29,7 @@ const (
 	GIF
 	TIFF
 	BMP
+	WEBP
 )
 
 func (f Format) String() string {
@@ -42,6 +44,8 @@ func (f Format) String() string {
 		return "TIFF"
 	case BMP:
 		return "BMP"
+	case WEBP:
+		return "WEBP"
 	default:
 		return "Unsupported"
 	}
@@ -55,6 +59,7 @@ var formatFromExt = map[string]Format{
 	"tiff": TIFF,
 	"bmp":  BMP,
 	"gif":  GIF,
+	"webp": WEBP,
 }
 
 // FormatFromExtension parses image format from extension:
@@ -146,11 +151,11 @@ func Decode(r io.Reader, opts ...DecodeOption) (image.Image, error) {
 //
 // Examples:
 //
-//	// Load an image from file.
-//	img, err := imaging.Open("test.jpg")
+// 	// Load an image from file.
+// 	img, err := imaging.Open("test.jpg")
 //
-//	// Load an image and transform it depending on the EXIF orientation tag (if present).
-//	img, err := imaging.Open("test.jpg", imaging.AutoOrientation(true))
+// 	// Load an image and transform it depending on the EXIF orientation tag (if present).
+// 	img, err := imaging.Open("test.jpg", imaging.AutoOrientation(true))
 //
 func Open(filename string, opts ...DecodeOption) (image.Image, error) {
 	file, err := fs.Open(filename)
@@ -275,11 +280,11 @@ func Encode(w io.Writer, img image.Image, format Format, opts ...EncodeOption) e
 //
 // Examples:
 //
-//	// Save the image as PNG.
-//	err := imaging.Save(img, "out.png")
+// 	// Save the image as PNG.
+// 	err := imaging.Save(img, "out.png")
 //
-//	// Save the image as JPEG with optional quality parameter set to 80.
-//	err := imaging.Save(img, "out.jpg", imaging.JPEGQuality(80))
+// 	// Save the image as JPEG with optional quality parameter set to 80.
+// 	err := imaging.Save(img, "out.jpg", imaging.JPEGQuality(80))
 //
 func Save(img image.Image, filename string, opts ...EncodeOption) (err error) {
 	f, err := FormatFromFilename(filename)
